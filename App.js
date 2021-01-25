@@ -48,9 +48,10 @@ export default () => {
           shadowColor: '#000',
           shadowOffset: {
             width: 0,
-            height: 2
+            height: 2,
           },
-          shadowOpacity: .3
+          shadowOpacity: 0.3,
+          shadowRadius: 20
         }}>
         <Image
           source={{uri: item.image}}
@@ -63,7 +64,7 @@ export default () => {
         />
         <View>
           <Text style={{fontSize: 20, fontWeight: '700'}}>{item.name}</Text>
-          <Text style={{fontSize: 16, opacity: .7}}>{item.jobTitle}</Text>
+          <Text style={{fontSize: 16, opacity: 0.7}}>{item.jobTitle}</Text>
           <Text style={{fontSize: 14, color: '#0099cc'}}>{item.email}</Text>
         </View>
       </View>
