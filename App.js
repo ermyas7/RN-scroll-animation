@@ -33,12 +33,22 @@ const DATA = [...Array(30).keys()].map((_, i) => {
 
 const SPACING = 20;
 const AVATAR_SIZE = 70;
+const ITEM_SIZE = AVATAR_SIZE + 3 * SPACING;
+const BG_IMG =
+  'https://images.pexels.com/photos/1231265/pexels-photo-1231265.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260';
 
 export default () => {
+  const scrollY = React.useRef(new Animated.Value(0)).current;
+
   const renderItem = ({item, index}) => {
-    console.log(item);
+    const inputRange = [-1, 0, index * ITEM_SIZE, index * (ITEM_SIZE + 2)];
+    const scale = scrollY.interpolate({
+      inputRange,
+      outputRange: [1, 1, 1, 0],
+    });
+
     return (
-      <View
+      <Animated.View
         style={{
           flexDirection: 'row',
           padding: SPACING,
@@ -51,7 +61,8 @@ export default () => {
             height: 2,
           },
           shadowOpacity: 0.3,
-          shadowRadius: 20
+          shadowRadius: 20,
+          transform: [{scale}],
         }}>
         <Image
           source={{uri: item.image}}
@@ -67,13 +78,18 @@ export default () => {
           <Text style={{fontSize: 16, opacity: 0.7}}>{item.jobTitle}</Text>
           <Text style={{fontSize: 14, color: '#0099cc'}}>{item.email}</Text>
         </View>
-      </View>
+      </Animated.View>
     );
   };
   return (
     <View style={{backgroundColor: '#fff'}}>
       <StatusBar hidden />
-      <FlatList
+      <Image source={{uri: BG_IMG}} style={StyleSheet.absoluteFillObject}  blurRadius={80}/>
+      <Animated.FlatList
+        onScroll={Animated.event(
+          [{nativeEvent: {contentOffset: {y: scrollY}}}],
+          {useNativeDriver: true},
+        )}
         data={DATA}
         keyExtractor={(item) => item.key}
         renderItem={renderItem}
