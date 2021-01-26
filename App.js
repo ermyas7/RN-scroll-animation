@@ -41,9 +41,19 @@ export default () => {
   const scrollY = React.useRef(new Animated.Value(0)).current;
 
   const renderItem = ({item, index}) => {
-    const inputRange = [-1, 0, index * ITEM_SIZE, index * (ITEM_SIZE + 2)];
+    const inputRange = [-1, 0, ITEM_SIZE * index, ITEM_SIZE * (index + 2)];
+    const opacityInputRange = [
+      -1,
+      0,
+      ITEM_SIZE * index,
+      ITEM_SIZE * (index + 1),
+    ];
     const scale = scrollY.interpolate({
       inputRange,
+      outputRange: [1, 1, 1, 0],
+    });
+    const opacity = scrollY.interpolate({
+      inputRange: opacityInputRange,
       outputRange: [1, 1, 1, 0],
     });
 
@@ -54,15 +64,16 @@ export default () => {
           padding: SPACING,
           marginBottom: SPACING,
           borderRadius: 12,
-          backgroundColor: 'rgba(255,255,255,.9)',
+          backgroundColor: 'rgba(255,255,255,.8)',
           shadowColor: '#000',
           shadowOffset: {
             width: 0,
-            height: 2,
+            height: 10,
           },
           shadowOpacity: 0.3,
           shadowRadius: 20,
           transform: [{scale}],
+          opacity,
         }}>
         <Image
           source={{uri: item.image}}
@@ -76,15 +87,20 @@ export default () => {
         <View>
           <Text style={{fontSize: 20, fontWeight: '700'}}>{item.name}</Text>
           <Text style={{fontSize: 16, opacity: 0.7}}>{item.jobTitle}</Text>
-          <Text style={{fontSize: 14, color: '#0099cc'}}>{item.email}</Text>
+          <Text style={{fontSize: 14, opacity: 0.8, color: '#0099cc'}}>
+            {item.email}
+          </Text>
         </View>
       </Animated.View>
     );
   };
   return (
-    <View style={{backgroundColor: '#fff'}}>
-      <StatusBar hidden />
-      <Image source={{uri: BG_IMG}} style={StyleSheet.absoluteFillObject}  blurRadius={80}/>
+    <View style={{backgroundColor: '#fff', flex: 1}}>
+      <Image
+        source={{uri: BG_IMG}}
+        style={StyleSheet.absoluteFillObject}
+        blurRadius={80}
+      />
       <Animated.FlatList
         onScroll={Animated.event(
           [{nativeEvent: {contentOffset: {y: scrollY}}}],
@@ -95,7 +111,7 @@ export default () => {
         renderItem={renderItem}
         contentContainerStyle={{
           padding: SPACING,
-          paddingTop: StatusBar.currentHeight || 24,
+          paddingTop: StatusBar.currentHeight || 42,
         }}
       />
     </View>
